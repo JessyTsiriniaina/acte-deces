@@ -23,8 +23,10 @@ import javax.swing.JButton;
 import java.awt.FlowLayout;
 
 import actedeces.model.ActeDeces;
+import actedeces.utils.FormatDateHeure;
+import actedeces.utils.Formulaire;
 
-public class FenetreModification extends JFrame {
+public class FenetreModification extends JFrame implements Formulaire {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -506,8 +508,8 @@ public class FenetreModification extends JFrame {
         txtNomDefunt.setText(acte.getNomDefunt());
         comboSexeDefunt.setSelectedItem(acte.getSexeDefunt());
         
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat dateFormat = FormatDateHeure.getDateFormat();
+        SimpleDateFormat timeFormat = FormatDateHeure.getHeureFormat();
 
         if (acte.getDateNaissanceDefunt() != null) txtDateNaissanceDefunt.setText(dateFormat.format(acte.getDateNaissanceDefunt())); else txtDateNaissanceDefunt.setText("");
         txtLieuNaissanceDefunt.setText(acte.getLieuNaissanceDefunt() != null ? acte.getLieuNaissanceDefunt() : "");

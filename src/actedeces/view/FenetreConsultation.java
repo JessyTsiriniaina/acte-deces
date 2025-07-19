@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentListener;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
@@ -20,15 +22,16 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import actedeces.model.ActeDeces;
+import actedeces.utils.FormatDateHeure;
 
 public class FenetreConsultation extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private final int INDEX_COLONNE_ID = 0;
-	private final int AUCUNE_COLONNE_SELECTIONNE = -1;
+	private final int AUCUN_ACTE_SELECTIONNE = -1;
 	private JPanel contentPane;
 	private JTable table;
-	private JTextField textField;
+	private JTextField champDeRecherche;
 	private JButton btnAjouterActe;
 	private JButton btnModifierActeSelection;
 	private JButton btnSupprimerActeSelection;
@@ -93,18 +96,24 @@ public class FenetreConsultation extends JFrame {
 							new Object[][] {
 							},
 							new String[] {
-								"ID", "Nom d\u00E9funt", "Date d\u00E9c\u00E8s", "Heure d\u00E9c\u00E8s"
+								"ID", "Nom d\u00E9funt", "Date de d\u00E9claration"
 							}
 						) {
 							private static final long serialVersionUID = 1L;
 							boolean[] columnEditables = new boolean[] {
-								false, false, false, false
+								false, false, false
 							};
 							public boolean isCellEditable(int row, int column) {
 								return columnEditables[column];
 							}
 						};
+						
 		table.setModel(tableModel);
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(100);
+		table.getColumnModel().getColumn(0).setMaxWidth(100);
+		table.getColumnModel().getColumn(2).setPreferredWidth(200);
+		table.getColumnModel().getColumn(2).setMaxWidth(200);
 		scrollPane.setViewportView(table);
 		
 		JPanel panel_1 = new JPanel();
@@ -115,9 +124,9 @@ public class FenetreConsultation extends JFrame {
 		JLabel lblRechercher = new JLabel("Rechercher: ");
 		panel_1.add(lblRechercher);
 		
-		textField = new JTextField();
-		panel_1.add(textField);
-		textField.setColumns(50);
+		champDeRecherche = new JTextField();
+		panel_1.add(champDeRecherche);
+		champDeRecherche.setColumns(50);
 	}
 	
 	
@@ -125,14 +134,29 @@ public class FenetreConsultation extends JFrame {
         tableModel.setRowCount(0);
         
         if (actes != null) {
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        	SimpleDateFormat dateFormat = FormatDateHeure.getDateFormat();
             for (ActeDeces acte : actes) {
                 tableModel.addRow(new Object[]{
                         acte.getId(),
                         acte.getNomDefunt(),
-                        dateFormat.format(acte.getDateDeces()),
-                        acte.getLieuDeces()
-                });
+                        dateFormat.format(acte.getDateDeclaration())
+                }); 
+            }
+        }
+    }
+	
+	
+	public void afficherActes(List<ActeDeces> actes, String motCle) {
+        if (actes != null) {
+        	SimpleDateFormat dateFormat = FormatDateHeure.getDateFormat();
+        	tableModel.setRowCount(0);
+            for (ActeDeces acte : actes) {
+            	if(acte.getNomDefunt().contains(motCle))
+	                tableModel.addRow(new Object[]{
+	                        acte.getId(),
+	                        acte.getNomDefunt(),
+	                        dateFormat.format(acte.getDateDeclaration())
+	                });
             }
         }
     }
@@ -143,7 +167,7 @@ public class FenetreConsultation extends JFrame {
         if (selectedRow >= 0) {
             return (int) tableModel.getValueAt(selectedRow, INDEX_COLONNE_ID); 
         }
-        return AUCUNE_COLONNE_SELECTIONNE; 
+        return AUCUN_ACTE_SELECTIONNE; 
     }
 	
 	
@@ -152,10 +176,13 @@ public class FenetreConsultation extends JFrame {
     public void addSupprimerListener(ActionListener listener) { btnSupprimerActeSelection.addActionListener(listener); }
     public void addApercuListener(ActionListener listener) { btnAperuActeSelection.addActionListener(listener); }
     public void addStatistiquesListener(ActionListener listener) { btnStatistique.addActionListener(listener); }
+    public void addMotCleChangeListener(DocumentListener listener) { champDeRecherche.getDocument().addDocumentListener(listener); }
     
     public void afficherMessage(String message, String titre, int typeMessage) {
         JOptionPane.showMessageDialog(this, message, titre, typeMessage);
     }
+    
+    public String getMotCle() { return champDeRecherche.getText().trim(); }
 
 
 }

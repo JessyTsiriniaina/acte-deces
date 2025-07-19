@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import actedeces.utils.Formulaire;
+
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,7 +24,7 @@ import javax.swing.UIManager;
 import javax.swing.JButton;
 import java.awt.FlowLayout;
 
-public class FenetreSaisie extends JFrame {
+public class FenetreSaisie extends JFrame implements Formulaire {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -265,7 +268,7 @@ public class FenetreSaisie extends JFrame {
 		gbc_lblInformationsSurLe_1.gridy = 10;
 		contentPane.add(lblInformationsSurLe_1, gbc_lblInformationsSurLe_1);
 		
-		JLabel lblDateDuDcs = new JLabel("Date du décès:");
+		JLabel lblDateDuDcs = new JLabel("Date du décès:*");
 		GridBagConstraints gbc_lblDateDuDcs = new GridBagConstraints();
 		gbc_lblDateDuDcs.anchor = GridBagConstraints.EAST;
 		gbc_lblDateDuDcs.insets = new Insets(0, 0, 5, 5);
@@ -282,7 +285,7 @@ public class FenetreSaisie extends JFrame {
 		contentPane.add(txtDateDeces, gbc_txtDateDeces);
 		txtDateDeces.setColumns(10);
 		
-		JLabel lblVilleDuDcs = new JLabel("Ville du décès: ");
+		JLabel lblVilleDuDcs = new JLabel("Ville du décès: *");
 		GridBagConstraints gbc_lblVilleDuDcs = new GridBagConstraints();
 		gbc_lblVilleDuDcs.anchor = GridBagConstraints.EAST;
 		gbc_lblVilleDuDcs.insets = new Insets(0, 0, 5, 5);
