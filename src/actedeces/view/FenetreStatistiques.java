@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.Dimension;
+import javax.swing.DefaultComboBoxModel;
 
 
 public class FenetreStatistiques extends JFrame {
@@ -48,6 +49,7 @@ public class FenetreStatistiques extends JFrame {
 		setTitle("Statistiques");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 650);
+		setMinimumSize(new Dimension(1200, 650));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -62,6 +64,7 @@ public class FenetreStatistiques extends JFrame {
 		panel.add(lblTypeDeStatistique);
 		
 		comboTypeStatistique = new JComboBox<String>(new String[] {"Par sexe", "Par classe d'âge"});
+		comboTypeStatistique.setModel(new DefaultComboBoxModel<String>(new String[] {"Par classe d'âge", "Par sexe"}));
 		comboTypeStatistique.setPreferredSize(new Dimension(400, 24));
 		comboTypeStatistique.setMinimumSize(new Dimension(100, 24));
 		panel.add(comboTypeStatistique);

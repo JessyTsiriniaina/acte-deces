@@ -1,11 +1,13 @@
 package actedeces.view;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import actedeces.utils.FormatDateHeure;
 import actedeces.utils.Formulaire;
 
 import java.awt.GridBagLayout;
@@ -15,6 +17,8 @@ import javax.swing.JOptionPane;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
@@ -76,6 +80,7 @@ public class FenetreSaisie extends JFrame implements Formulaire {
 		setTitle("Saisi d'un nouvel acte de décès");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 650);
+		setMinimumSize(new Dimension(1200, 650));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -515,6 +520,16 @@ public class FenetreSaisie extends JFrame implements Formulaire {
         txtOfficierEtatCivil.setText("");
         txtDateDeclaration.setText("");
     }
+	
+	
+	public void remplirDateEtHeure() {
+		SimpleDateFormat dateFormat = FormatDateHeure.getDateFormat();
+        SimpleDateFormat timeFormat = FormatDateHeure.getHeureFormat();
+        
+        txtDateDeces.setText(dateFormat.format(new Date()));
+        txtHeureDeces.setText(timeFormat.format(new Date()));
+        txtDateDeclaration.setText(dateFormat.format(new Date()));
+	}
 	
 	
 	public void afficherMessage(String message, String titre, int typeMessage) {

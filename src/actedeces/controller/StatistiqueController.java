@@ -1,6 +1,5 @@
 package actedeces.controller;
 
-import java.awt.Color;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -13,16 +12,21 @@ import javax.swing.JOptionPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.util.Rotation;
 
 import actedeces.model.ActeDeces;
 import actedeces.model.ActeDecesDAO;
 import actedeces.utils.FenetresManager;
+import actedeces.utils.ThemeManager;
 import actedeces.view.FenetreConsultation;
 import actedeces.view.FenetreStatistiques;
 
@@ -60,9 +64,6 @@ public class StatistiqueController {
             
             JFreeChart graphique = null;
             String titreGraphique = "";
-            Color palette1 = new Color(0, 200, 0, 255);
-            Color palette2 = new Color(0, 51, 153);
-            Color backgroundColor = new Color(238, 238, 238);
             
             if ("Par sexe".equals(typeStat)) {
                 titreGraphique = "Répartition des décès par sexe";
@@ -76,22 +77,24 @@ public class StatistiqueController {
                 for (Map.Entry<String, Integer> entry : comptesSexe.entrySet()) {
                     dataset.setValue(entry.getKey()/* + " (" + entry.getValue() + ")"*/, entry.getValue());
                 }
-                graphique = ChartFactory.createPieChart(titreGraphique, dataset, true, true, false);
+                graphique = ChartFactory.createPieChart3D(titreGraphique, dataset, true, true, false);
                 
-                PiePlot plot = (PiePlot) graphique.getPlot();
-                plot.setSectionPaint("Masculin" , palette1);
-                plot.setSectionPaint("Féminin", palette2);
-                graphique.setBackgroundPaint(backgroundColor);
-                plot.setBackgroundPaint(backgroundColor);
+                PiePlot3D plot = (PiePlot3D) graphique.getPlot();
+                plot.setStartAngle(290);               
+                plot.setDirection(Rotation.CLOCKWISE); 
+                plot.setForegroundAlpha(0.8f); 
+                plot.setSectionPaint("Masculin" , ThemeManager.PALLETTE2);
+                plot.setSectionPaint("Féminin", ThemeManager.PALLETTE1);
+                plot.setBackgroundPaint(ThemeManager.BACKGROUND_PRINCIPAL);
+                plot.setOutlinePaint(ThemeManager.BACKGROUND_PRINCIPAL);    
             } 
-            
-            
+           
             else if ("Par classe d'âge".equals(typeStat)) {
                 titreGraphique = "Répartition des décès par classe d'âge";
                 DefaultCategoryDataset dataset = new DefaultCategoryDataset();
                 
                 Map<String, Integer> comptesAge = new HashMap<>();
-                comptesAge.put("1-10 ans", 0);
+                comptesAge.put("0-10 ans", 0);
                 comptesAge.put("11-20 ans", 0);
                 comptesAge.put("21-50 ans", 0);
                 comptesAge.put("51+ ans", 0);
@@ -100,7 +103,7 @@ public class StatistiqueController {
                 for (ActeDeces acte : tousLesActes) {
                     if (acte.getDateNaissanceDefunt() != null && acte.getDateDeces() != null) {
                         int age = calculerAge(acte.getDateNaissanceDefunt(), acte.getDateDeces());
-                        if (age >= 1 && age <= 10) comptesAge.put("1-10 ans", comptesAge.get("1-10 ans") + 1);
+                        if (age >= 0 && age <= 10) comptesAge.put("0-10 ans", comptesAge.get("0-10 ans") + 1);
                         else if (age >= 11 && age <= 20) comptesAge.put("11-20 ans", comptesAge.get("11-20 ans") + 1);
                         else if (age >= 21 && age <= 50) comptesAge.put("21-50 ans", comptesAge.get("21-50 ans") + 1);
                         else if (age >= 51) comptesAge.put("51+ ans", comptesAge.get("51+ ans") + 1);
@@ -110,7 +113,7 @@ public class StatistiqueController {
                     }
                 }
                 
-                dataset.addValue(comptesAge.get("1-10 ans"), "Décès", "1-10 ans");
+                dataset.addValue(comptesAge.get("0-10 ans"), "Décès", "0-10 ans");
                 dataset.addValue(comptesAge.get("11-20 ans"), "Décès", "11-20 ans");
                 dataset.addValue(comptesAge.get("21-50 ans"), "Décès", "21-50 ans");
                 dataset.addValue(comptesAge.get("51+ ans"), "Décès", "51+ ans");
@@ -122,12 +125,17 @@ public class StatistiqueController {
                 
                 CategoryPlot plot = (CategoryPlot) graphique.getPlot();
                 BarRenderer renderer = (BarRenderer) plot.getRenderer();
-                renderer.setSeriesPaint(0, palette1);
-                graphique.setBackgroundPaint(backgroundColor);
-                plot.setBackgroundPaint(backgroundColor);
+                renderer.setSeriesPaint(0, ThemeManager.PALLETTE1);
+                renderer.setShadowVisible(false);
+                renderer.setBarPainter(new StandardBarPainter());
+                plot.setBackgroundPaint(ThemeManager.BACKGROUND_PRINCIPAL);
+                plot.setOutlinePaint(ThemeManager.BACKGROUND_PRINCIPAL);
             }
 
             if (graphique != null) {
+                graphique.setBackgroundPaint(ThemeManager.BACKGROUND_PRINCIPAL);
+            	LegendTitle legend = graphique.getLegend();
+                legend.setFrame(BlockBorder.NONE);
                 ChartPanel chartPanel = new ChartPanel(graphique);
                 chartPanel.setPreferredSize(new java.awt.Dimension(750, 500)); 
                 this.fenetreStatistiques.afficherGraphique(chartPanel);
@@ -144,7 +152,7 @@ public class StatistiqueController {
 
     private int calculerAge(java.sql.Date dateNaissance, java.sql.Date dateDeces) {
         if (dateNaissance == null || dateDeces == null) {
-            return -1; // Impossible de calculer
+            return -1; 
         }
         LocalDate naissance = dateNaissance.toLocalDate();
         LocalDate deces = dateDeces.toLocalDate();

@@ -52,8 +52,26 @@ public class ConstructeurObjetDepuisFormulaires {
         	acte.getDateDeces() == null || acte.getVilleDeces().isBlank() ||
             acte.getNomDeclarant().isBlank() || acte.getRegionDeclaration().isBlank() ||
             acte.getCommuneDeclaration().isBlank() || acte.getOfficierEtatCivil().isBlank() ||
-            acte.getDateDeclaration() == null) {
+            acte.getDateDeclaration() == null) 
+        {
             form.afficherMessage("Veuillez remplir tous les champs obligatoires (*).", "Champs manquants", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+        
+        
+        if(acte.getDateDeces() != null && acte.getDateNaissanceDefunt() != null &&
+           acte.getDateDeces().before(acte.getDateNaissanceDefunt())
+        	) 
+        {
+            form.afficherMessage("Date de naissance doit  être avant date de décès", "Entrées invalide", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+        
+        if(acte.getDateDeces() != null && acte.getDateDeclaration() != null &&
+           acte.getDateDeclaration().before(acte.getDateDeces())
+        	) 
+        {
+        	form.afficherMessage("On ne peut pas declarer la mort de quelqu'un avant sa mort", "Entrées invalide", JOptionPane.WARNING_MESSAGE);
             return null;
         }
         return acte;

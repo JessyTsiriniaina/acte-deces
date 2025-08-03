@@ -83,8 +83,7 @@ public class ApercuController {
     	boolean mereDefuntVivante = acte.isMereDefuntVivante();
     	String informationParents = infoParents(pereDefunt, mereDefunt, pereDefuntVivant, mereDefuntVivante);
     	String dateDeclaration = dateMalagasy(acte.getDateDeclaration(), false);
-    	// String heureDeclaration;
-    	// String minuteDeclaration;
+    	
     	String  nomDeclarant = acte.getNomDeclarant();
     	String fonctionDeclarant = acte.getFonctionDeclarant();
     	String villeResidenceDeclarant =  acte.getVilleResidenceDeclarant();
@@ -132,8 +131,8 @@ public class ApercuController {
     		+ "                    ----- Tamin'ny " + dateDeces +"\n"
     		+ (heureMinuteDeces.isBlank() ? "" : (", tamin'ny " + heureMinuteDeces ) + " \n")
     		+ "                    , no maty tao " + villeDeces +"\n"
-    		+ (lieuDeces.isBlank() ? "" : (", tao amin'ny " + lieuDeces )+ ", \n")
-    		+ "                    "+ nomDefunt + ", " + sexeDefunt + "\n"
+    		+ (lieuDeces.isBlank() ? "" : (", tao amin'ny " + lieuDeces )+ " \n")
+    		+ "                    "+ ", "+ nomDefunt + ", " + sexeDefunt + "\n"
     		+ (!lieuNaissanceDefunt.isBlank() || !dateNaissanceDefunt.isBlank() ? ", teraka" : "\n")
     		+ (lieuNaissanceDefunt.isBlank() ? "" : (" tao " + lieuNaissanceDefunt) + ",\n")
     		+ (dateNaissanceDefunt.isBlank() ? "" : (" tamin'ny " + dateNaissanceDefunt) + "\n")
@@ -270,12 +269,12 @@ public class ApercuController {
     	
     	if(heureEnFormat24 > 12) {
     		int heureMalagasy = heureEnFormat24 - 12;
-    		return isa.convertirEnLettre(heureMalagasy) + " ora sy " + isa.convertirEnLettre(minute) + " minitra, hariva";
+    		return isa.convertirEnLettre(heureMalagasy) + " ora " + (minute == 0 ? "" : "sy " + isa.convertirEnLettre(minute) + " minitra") +" hariva";
     	}
     	else if (heureEnFormat24 == 0) {
-    		return "roa ambin'ny folo ora sy " + isa.convertirEnLettre(minute) + " minitra, alina";
+    		return "roa ambin'ny folo ora " + (minute == 0 ? "" : "sy " + isa.convertirEnLettre(minute) + " minitra") + ", alina";
     	} else {
-    		return isa.convertirEnLettre(heureEnFormat24) + " ora sy " + isa.convertirEnLettre(minute) + " minitra, maraina";	}
+    		return isa.convertirEnLettre(heureEnFormat24) + " ora " + (minute == 0 ? "" : "sy " + isa.convertirEnLettre(minute) + " minitra") + ", maraina";	}
     }
     
     

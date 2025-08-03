@@ -23,6 +23,10 @@ import javax.swing.table.DefaultTableModel;
 
 import actedeces.model.ActeDeces;
 import actedeces.utils.FormatDateHeure;
+import actedeces.utils.ThemeManager;
+
+import java.awt.Dimension;
+import java.awt.Rectangle;
 
 public class FenetreConsultation extends JFrame {
 
@@ -60,9 +64,11 @@ public class FenetreConsultation extends JFrame {
 	 * Create the frame.
 	 */
 	public FenetreConsultation() {
+		ThemeManager.appliquerTheme();
 		setTitle("Consultation des actes de décès");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 650);
+		setMinimumSize(new Dimension(1200, 650));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -70,6 +76,10 @@ public class FenetreConsultation extends JFrame {
 		contentPane.setLayout(new BorderLayout(5, 5));
 		
 		JPanel panel = new JPanel();
+        panel.setBackground(ThemeManager.BACKGROUND_PRINCIPAL); 
+        
+        
+        
 		contentPane.add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		
@@ -96,12 +106,12 @@ public class FenetreConsultation extends JFrame {
 							new Object[][] {
 							},
 							new String[] {
-								"ID", "Nom d\u00E9funt", "Date de d\u00E9claration"
+								"ID", "Nom d\u00E9funt", "Sexe", "Date de d\u00E9claration"
 							}
 						) {
 							private static final long serialVersionUID = 1L;
 							boolean[] columnEditables = new boolean[] {
-								false, false, false
+								false, false, false, false
 							};
 							public boolean isCellEditable(int row, int column) {
 								return columnEditables[column];
@@ -114,9 +124,13 @@ public class FenetreConsultation extends JFrame {
 		table.getColumnModel().getColumn(0).setMaxWidth(100);
 		table.getColumnModel().getColumn(2).setPreferredWidth(200);
 		table.getColumnModel().getColumn(2).setMaxWidth(200);
+		table.getColumnModel().getColumn(3).setPreferredWidth(200);
+		table.getColumnModel().getColumn(3).setMaxWidth(200);
 		scrollPane.setViewportView(table);
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(new Rectangle(0, 0, 0, 30));
+		panel_1.setMinimumSize(new Dimension(10, 30));
 		contentPane.add(panel_1, BorderLayout.NORTH);
 		FlowLayout fl_panel_1 = new FlowLayout(FlowLayout.CENTER, 5, 5);
 		panel_1.setLayout(fl_panel_1);
@@ -125,8 +139,9 @@ public class FenetreConsultation extends JFrame {
 		panel_1.add(lblRechercher);
 		
 		champDeRecherche = new JTextField();
+		champDeRecherche.setMinimumSize(new Dimension(5, 30));
 		panel_1.add(champDeRecherche);
-		champDeRecherche.setColumns(50);
+		champDeRecherche.setColumns(70);
 	}
 	
 	
@@ -139,24 +154,9 @@ public class FenetreConsultation extends JFrame {
                 tableModel.addRow(new Object[]{
                         acte.getId(),
                         acte.getNomDefunt(),
+                        acte.getSexeDefunt(),
                         dateFormat.format(acte.getDateDeclaration())
                 }); 
-            }
-        }
-    }
-	
-	
-	public void afficherActes(List<ActeDeces> actes, String motCle) {
-        if (actes != null) {
-        	SimpleDateFormat dateFormat = FormatDateHeure.getDateFormat();
-        	tableModel.setRowCount(0);
-            for (ActeDeces acte : actes) {
-            	if(acte.getNomDefunt().contains(motCle))
-	                tableModel.addRow(new Object[]{
-	                        acte.getId(),
-	                        acte.getNomDefunt(),
-	                        dateFormat.format(acte.getDateDeclaration())
-	                });
             }
         }
     }

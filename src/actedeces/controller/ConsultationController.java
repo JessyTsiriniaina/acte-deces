@@ -1,6 +1,7 @@
 package actedeces.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -24,7 +25,8 @@ public class ConsultationController {
     private FenetreModification fenetreModification;
     private FenetreApercuActe fenetreApercuActe;
     private FenetreStatistiques fenetreStatistiques;
-    private ActeDecesDAO acteDecesDAO;;
+    private ActeDecesDAO acteDecesDAO;
+    private List<ActeDeces> actes;
     
 	private final int AUCUN_ACTE_SELECTIONNE = -1;
 
@@ -48,46 +50,50 @@ public class ConsultationController {
     			new DocumentListener() {
     				@Override
     				public void insertUpdate(DocumentEvent e) {
-    					actualiserListeActes(fenetreConsultation.getMotCle());
+    					actualiserListeActes();
     				}
 
 					@Override
 					public void removeUpdate(DocumentEvent e) {
-						actualiserListeActes(fenetreConsultation.getMotCle());
+						actualiserListeActes();
 					}
 
 					@Override
 					public void changedUpdate(DocumentEvent e) {
-						actualiserListeActes(fenetreConsultation.getMotCle());
+						actualiserListeActes();
 					}
     			}
     	);
     }
     
     
+    
     private void actualiserListeActes() {
-        try {
-            List<ActeDeces> actes = acteDecesDAO.getAllActeDeces();
-            this.fenetreConsultation.afficherActes(actes);
-        } catch (SQLException ex) {
-        	this.fenetreConsultation.afficherMessage("Erreur lors du chargement des actes: " + ex.getMessage(),
+    	try {
+			String motCle = fenetreConsultation.getMotCle().toLowerCase();
+			
+			//Optimisation pour minimiser les requettes envoyé à la base
+			if(motCle.isBlank()) {
+				actes = acteDecesDAO.getAllActeDeces();
+				this.fenetreConsultation.afficherActes(actes);
+				System.out.println("Envoyé un requette");
+			} else {
+				List<ActeDeces> acteRecherche = new ArrayList<ActeDeces>();
+				
+				for(ActeDeces acte: actes) {
+					boolean estIncluDansRecherche = acte.getNomDefunt().toLowerCase().contains(motCle) 
+													|| Integer.toString(acte.getId()).equals(motCle);
+					if(estIncluDansRecherche)
+						acteRecherche.add(acte);
+				}
+				this.fenetreConsultation.afficherActes(acteRecherche);
+			}
+			
+		} catch (SQLException e) {
+			this.fenetreConsultation.afficherMessage("Erreur lors du chargement des actes: " + e.getMessage(),
                     "Erreur base de données", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    
-    
-    private void actualiserListeActes(String motCle) {
-        try {
-        	if(motCle.isBlank()) {
-        		actualiserListeActes();
-        		return;
-        	}
-            List<ActeDeces> actes = acteDecesDAO.getAllActeDeces();
-            this.fenetreConsultation.afficherActes(actes, motCle);
-        } catch (SQLException ex) {
-        	this.fenetreConsultation.afficherMessage("Erreur lors du chargement des actes: " + ex.getMessage(),
-                    "Erreur base de données", JOptionPane.ERROR_MESSAGE);
-        }
+			e.printStackTrace();
+		} 
     }
     
     

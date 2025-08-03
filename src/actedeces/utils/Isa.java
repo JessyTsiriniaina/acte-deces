@@ -2,7 +2,7 @@ package actedeces.utils;
 
 public class Isa {
 	private final String[] unites = {"", "iray", "roa", "telo", "efatra", "dimy", "enina", "fito", "valo", "sivy"};
-    private final String[] adolescents = {"folo", "iraika ambin'ny folo", "roa ambin'ny folo", "telo ambin'ny folo",
+    private final String[] entre_vingt_et_dix = {"folo", "iraika ambin'ny folo", "roa ambin'ny folo", "telo ambin'ny folo",
                    							"efatra ambin'ny folo", "dimy ambin'ny folo", "enina ambin'ny folo",
                    							"fito ambin'ny folo", "valo ambin'ny folo", "sivy ambin'ny folo"};
     
@@ -24,7 +24,7 @@ public class Isa {
 
 
     public String convertirEnLettre(double n) {
-        String nombre = Double.toString(n);
+        String nombre = String.format("%.3f", n);
         String[] nombreSplitted = nombre.split("\\.");
         int entier = Integer.parseInt(nombreSplitted[0]);
     	int decimal = Integer.parseInt(nombreSplitted[1]);
@@ -132,7 +132,7 @@ public class Isa {
     		return traiterDizaines(n, resteUn);
     	else if (n < 200) {
     		int reste = n % 100;
-    		return reste == 0 ? "zato" : traiterDizaines(n, resteUn).concat(" amby zato");
+    		return reste == 0 ? "zato" : traiterDizaines(reste, resteUn).concat(" amby zato");
     	} else {
     		int centaine = Math.floorDiv(n, 100);
     		int reste = n % 100;
@@ -148,8 +148,8 @@ public class Isa {
     	if(n < 10) 
     		return n == 1 && !resteUn ? "iraika" : unites[n];
     	else if (n < 20)
-    		return adolescents[n - 10];
-    	else if (n%10 == 0)
+    		return entre_vingt_et_dix[n - 10];
+    	else if (n % 10 == 0)
     		return dizaines[Math.floorDiv(n, 10)];
     	else {
     		String unite = n == 1 && !resteUn ? "iraika" : unites[n % 10];

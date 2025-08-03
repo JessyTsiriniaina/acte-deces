@@ -1,5 +1,6 @@
 package actedeces.view;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -80,6 +81,7 @@ public class FenetreModification extends JFrame implements Formulaire {
 		setTitle("Modification d'un acte de décès");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 650);
+		setMinimumSize(new Dimension(1200, 650));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 

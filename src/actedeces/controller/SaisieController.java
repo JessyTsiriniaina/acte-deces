@@ -25,6 +25,7 @@ public class SaisieController {
 		this.fenetreSaisie = fenetreSaisie;
 		this.fenetreConsultation = fenetreConsultation;
 		this.fenetreSaisie.reinitialiserChamps();
+		this.fenetreSaisie.remplirDateEtHeure();
 		initSaisieListener();
 	}
 	
