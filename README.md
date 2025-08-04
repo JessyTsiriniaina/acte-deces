@@ -6,4 +6,4 @@ C'est un logiciel, codé en Java, destiné à gerer et generer automatiquement l
 - Eclipse IDE 2025-03
 - MySQL
 ## NB
-Le fichier sturcture.sql contient le structure de base de données utilisé dans l'application
+Le fichier stucture.sql contient le structure de base de données utilisé dans l'application
